@@ -10,40 +10,42 @@ help: ## Show this help menu
 
 .PHONY: describe_test
 describe_test: ## Show descriptive analysis of dataset_test.csv
-	python3 Analysis/describe.py dataset_test.csv
+	python3 Analysis/describe.py datasets/dataset_test.csv
+	python3 Analysis/describe_pandas.py datasets/dataset_test.csv
+	#diff -u dataset_test_describe_pandas.txt dataset_test_describe.txt
 
 .PHONY: describe_train
 describe_train: ## Show descriptive analysis of dataset_train.csv
-	python3 Analysis/describe.py dataset_train.csv
+	python3 Analysis/describe.py datasets/dataset_train.csv
 
 .PHONY: histogram_test
 histogram_test: ## Show histogram of dataset_test.csv
-	python3 Visualization/histogram.py dataset_test.csv
+	python3 Visualization/histogram.py datasets/dataset_test.csv
 
 .PHONY: histogram_train
 histogram_train: ## Show histogram of dataset_train.csv
-	python3 Visualization/histogram.py dataset_train.csv
+	python3 Visualization/histogram.py datasets/dataset_train.csv
 
 .PHONY: pair_plot_test
 pair_plot_test: ## Show pair_plot of dataset_test.csv
-	python3 Visualization/pair_plot.py dataset_test.csv
+	python3 Visualization/pair_plot.py datasets/dataset_test.csv
 
 .PHONY: pair_plot_train
 pair_plot_train: ## Show pair_plot of dataset_train.csv
-	python3 Visualization/pair_plot.py dataset_train.csv
+	python3 Visualization/pair_plot.py datasets/dataset_train.csv
 
 .PHONY: scatter_test
 scatter_test: ## Show scatter of dataset_test.csv
-	python3 Visualization/scatter.py dataset_test.csv
+	python3 Visualization/scatter.py datasets/dataset_test.csv
 
 .PHONY: scatter_train
 scatter_train: ## Show scatter of dataset_train.csv
-	python3 Visualization/scatter.py dataset_train.csv
+	python3 Visualization/scatter.py datasets/dataset_train.csv
 
 
 .PHONY: train
 train: ## Train multi-classifier using a logistic regression one-vs-all approach
-	python3 Regression/logreg_train.py dataset_train.csv
+	python3 Regression/logreg_train.py datasets/dataset_train.csv
 	
 .PHONY: predict
 predict: ## Predict houses for dataset_test.csv using weights.json
