@@ -18,12 +18,8 @@ describe_test: ## Show descriptive analysis of dataset_test.csv
 describe_train: ## Show descriptive analysis of dataset_train.csv
 	python3 Analysis/describe.py datasets/dataset_train.csv
 
-.PHONY: histogram_test
-histogram_test: ## Show histogram of dataset_test.csv
-	python3 Visualization/histogram.py datasets/dataset_test.csv
-
-.PHONY: histogram_train
-histogram_train: ## Show histogram of dataset_train.csv
+.PHONY: histogram
+histogram: ## Show histogram of dataset_train.csv
 	python3 Visualization/histogram.py datasets/dataset_train.csv
 
 .PHONY: pair_plot_test
@@ -68,3 +64,7 @@ unset: ## removes the python
 .PHONY: upgrade
 upgrade: ## Upgrades pip
 	pip install --upgrade pip
+
+.PHONY: norminette
+norminette: ## Run norminette on all .py files
+	flake8  */*.py		
