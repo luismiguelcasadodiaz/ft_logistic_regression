@@ -2,7 +2,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
-from statistics import ft_statistics
+from statistics import ft_statistics, ft_category_statistics
 
 
 def path_test(path: str) -> str:
@@ -27,16 +27,31 @@ def path_test(path: str) -> str:
     assert os.path.isfile(abspath), f"{path} is not a file"
     assert os.access(abspath, os.R_OK), f"User can not read permit on {path}"
     _, ext = os.path.splitext(abspath)
-    assert ext.lower() in (".csv"), \
+    assert ext.lower() in (".csv",), \
         f"Expected a CSV file, got '{ext[1:]}'"
     return abspath
 
+
 def fmt(x):
+    """Format a single value for display in the descriptive statistics table.
+
+    Formats floats to six decimal places, renders integers as plain
+    strings, and shows missing values as "Nan". Any other type falls
+    back to str(). Intended for use as a per-column formatter passed to
+    DataFrame.to_string().
+
+    Args:
+        x: The value to format. May be a float, an integer, a missing
+            value (NaN), or any other type.
+
+    Returns:
+        The string representation of x, formatted according to its type.
+    """
     if pd.api.types.is_float(x):
         if pd.isna(x):
             return "Nan"
         return f"{x: .6f}"
-    if  pd.api.types.is_integer(x):
+    if pd.api.types.is_integer(x):
         if pd.isna(x):
             return "Nan"
         return f"{x}"
@@ -44,7 +59,8 @@ def fmt(x):
         return "Nan"
     return str(x)
 
-def ft_describe_numeric(feature:str,data: pd.Series, desc:pd.DataFrame):
+
+def ft_describe_numeric(feature: str, data: pd.Series, desc: pd.DataFrame):
     """Compute descriptive statistics for a numeric feature.
 
     This function calculates various descriptive statistics for a given
@@ -62,20 +78,22 @@ def ft_describe_numeric(feature:str,data: pd.Series, desc:pd.DataFrame):
     """
     values = data.dropna().values  # Drop NaN values for accurate statistics
     n = len(values)
-    desc.at['count', feature] = float(n) # Count of non-NaN values    
+    desc.at['count', feature] = float(n)  # Count of non-NaN values
     if n == 0:
         for stat in desc.index[1:]:
             desc.at[stat, feature] = np.nan
         return  # Skip empty columns
 
-    sorted_values = sorted(values)
+    sort_values = sorted(values)
     for stat in desc.index[1:]:
         if stat in ['mean', 'std', 'min', '25%', '50%', '75%', 'max']:
-            desc.at[stat, feature] = ft_statistics(sorted_values, n=n, stat=stat)
+            desc.at[stat, feature] = ft_statistics(sort_values, n=n, stat=stat)
         else:
-            desc.at[stat, feature] = np.nan  # For 'unique', 'top', 'freq', set as NaN or handle separately if needed
+            # For 'unique', 'top', 'freq', set as NaN
+            desc.at[stat, feature] = np.nan
 
-def ft_describe_categorical(feature:str,data: pd.Series, desc:pd.DataFrame):
+
+def ft_describe_categorical(feature: str, data: pd.Series, desc: pd.DataFrame):
     """Compute descriptive statistics for a categorical feature.
 
     This function calculates various descriptive statistics for a given
@@ -93,19 +111,24 @@ def ft_describe_categorical(feature:str,data: pd.Series, desc:pd.DataFrame):
     """
     values = data.dropna().values
     n = len(values)
-    desc.at['count', feature] = n  # Count of non-NaN values    
+    desc.at['count', feature] = n  # Count of non-NaN values
     if n == 0:
         for stat in desc.index[1:]:
             desc.at[stat, feature] = np.nan
         return  # Skip empty columns
+    unique_count, top_value, frequency = ft_category_statistics(values, n=n)
+    desc.at['unique', feature] = unique_count
+    desc.at['top', feature] = top_value
+    desc.at['freq', feature] = frequency
+    # For 'mean', 'std', 'min', '25%', '50%', '75%', 'max',
+    # set as NaN or handle separately if needed
 
     for stat in desc.index[1:]:
-        if stat in ['unique', 'top', 'freq']:
-            desc.at[stat, feature] = ft_statistics(values, n=n, stat=stat)
-        else:
-            desc.at[stat, feature] = np.nan  # For 'mean', 'std', 'min', '25%', '50%', '75%', 'max', set as NaN or handle separately if needed
+        if stat not in ['unique', 'top', 'freq']:
+            desc.at[stat, feature] = np.nan
 
-def ft_describe_other(feature:str,data: pd.Series, desc:pd.DataFrame):
+
+def ft_describe_other(feature: str, data: pd.Series, desc: pd.DataFrame):
     """Compute descriptive statistics for a feature of other types.
 
     This function calculates various descriptive statistics for a given
@@ -129,29 +152,33 @@ def ft_describe_other(feature:str,data: pd.Series, desc:pd.DataFrame):
             desc.at[stat, feature] = np.nan
         return  # Skip empty columns
 
+    # Set all other stats to NaN for unsupported types
     for stat in desc.index[1:]:
-        desc.at[stat, feature] = np.nan  # Set all other stats to NaN for unsupported types
+        desc.at[stat, feature] = np.nan
+
 
 def ft_describe(dataset_path: str) -> pd.DataFrame:
     """Perform descriptive analysis on a CSV dataset.
 
     This function reads a CSV file into a pandas DataFrame and computes
-    descriptive statistics for each column, including count, mean, std,
-    min, 25%, 50%, 75%, and max values.
+    descriptive statistics for each column, including count, unique, top, freq,
+    mean, std, min, 25%, 50%, 75%, and max values.
 
     Args:
         dataset_path: The path to the CSV dataset file.
 
     Returns:
-        A pandas DataFrame containing the descriptive statistics of the dataset.
+        A pandas DataFrame containing the dataset's descriptive statistics.
     """
     df = pd.read_csv(dataset_path)
-    desc_index = ['count', 'unique', 'top', 'freq', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
+    desc_index = ['count', 'unique', 'top', 'freq',
+                  'mean', 'std', 'min', '25%', '50%', '75%', 'max']
     desc_columns = df.columns.tolist()
-    desc= pd.DataFrame(np.zeros((len(desc_index), len(desc_columns))), \
-                       index=desc_index, columns=desc_columns, \
-                        dtype=object)  # Initialize an empty DataFrame for descriptive stats
+    # Initialize an empty DataFrame for descriptive stats
 
+    desc = pd.DataFrame(np.zeros((len(desc_index), len(desc_columns))),
+                        index=desc_index, columns=desc_columns,
+                        dtype=object)
     for feature in desc_columns:
         if pd.api.types.is_numeric_dtype(df[feature].dtype):
             ft_describe_numeric(feature, df[feature], desc)
@@ -161,16 +188,17 @@ def ft_describe(dataset_path: str) -> pd.DataFrame:
             ft_describe_other(feature, df[feature], desc)
     return desc
 
-def main(dataset_path: str):
-    print(f"Descriptive Analysis of {dataset_path}")
-    
+
+def main(path: str):
+    print(f"Descriptive Analysis of {path}")
+
     pd.set_option('display.max_columns', None)
-    pd.set_option('display.width', None)       # don't wrap based on terminal width
+    pd.set_option('display.width', None)   # don't wrap based on terminal width
     pd.set_option('display.max_rows', None)
-    desc = ft_describe(dataset_path)
+    desc = ft_describe(path)
     print(desc.to_string(formatters={col: fmt for col in desc.columns}))
-    output_file = os.path.splitext(os.path.basename(dataset_path))[0] + "_describe.txt"
-    with open(output_file, "w") as f:
+    file = os.path.splitext(os.path.basename(path))[0] + "_describe.txt"
+    with open(file, "w") as f:
         f.write(desc.to_string())
 
 

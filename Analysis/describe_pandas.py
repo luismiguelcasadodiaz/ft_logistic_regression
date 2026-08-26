@@ -30,16 +30,16 @@ def path_test(path: str) -> str:
     return abspath
 
 
-def main(dataset_path: str):
-    print(f"Descriptive Analysis of {dataset_path}")
-    df = pd.read_csv(dataset_path)
+def main(path: str):
+    print(f"Descriptive Analysis of {path}")
+    df = pd.read_csv(path)
     pd.set_option('display.max_columns', None)
-    pd.set_option('display.width', None)       # don't wrap based on terminal width
+    pd.set_option('display.width', None)   # don't wrap based on terminal width
     pd.set_option('display.max_rows', None)
     desc = df.describe(include='all')
     print(desc)
-    output_file = os.path.splitext(os.path.basename(dataset_path))[0] + "_describe_pandas.txt"
-    with open(output_file, "w") as f:
+    file = os.path.splitext(os.path.basename(path))[0] + "_describe_pandas.txt"
+    with open(file, "w") as f:
         f.write(desc.to_string())
 
 

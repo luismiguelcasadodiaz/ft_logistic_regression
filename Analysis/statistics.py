@@ -10,7 +10,6 @@ from typing import Any
 import numpy as np
 
 
-
 def ft_percentile(percentile: float, data: Any, n: int) -> float:
     """Compute a percentile value using linear interpolation.
 
@@ -89,6 +88,7 @@ def ft_75_percentile(data: Any, n: int) -> float:
     """
     return ft_percentile(0.75, data, n)
 
+
 def ft_min(data: Any, n: int) -> float:
     """Compute the minimum value.
 
@@ -105,6 +105,7 @@ def ft_min(data: Any, n: int) -> float:
             partial_min = num
     return partial_min
 
+
 def ft_max(data: Any, n: int) -> float:
     """Compute the maximum value.
 
@@ -120,6 +121,7 @@ def ft_max(data: Any, n: int) -> float:
         if num > partial_max:
             partial_max = num
     return partial_max
+
 
 def ft_count(data: Any, n: int) -> float:
     """Compute the count of elements in the dataset.
@@ -209,7 +211,8 @@ def ft_unique(data: Any, n: int) -> float:
     Returns:
         The count of unique values as a float.
     """
-    return len(set(data))
+    return ft_category_statistics(data, n)[0]
+
 
 def ft_top(data: Any, n: int) -> float:
     """Compute the most frequent value (mode) in the dataset.
@@ -222,10 +225,8 @@ def ft_top(data: Any, n: int) -> float:
         The most frequent value as a float. If there are multiple modes,
         returns one of them arbitrarily.
     """
-    from collections import Counter
-    counter = Counter(data)
-    most_common = counter.most_common(1)
-    return most_common[0][0] if most_common else None
+    return ft_category_statistics(data, n)[1]
+
 
 def ft_freq(data: Any, n: int) -> float:
     """Compute the frequency of the most frequent value (mode) in the dataset.
@@ -238,10 +239,31 @@ def ft_freq(data: Any, n: int) -> float:
         The frequency of the most frequent value as a float. If there are
         multiple modes, returns the frequency of one of them arbitrarily.
     """
-    from collections import Counter
-    counter = Counter(data)
-    most_common = counter.most_common(1)
-    return most_common[0][1] if most_common else 0  
+    return ft_category_statistics(data, n)[2]
+
+
+def ft_category_statistics(data: Any, n: int) -> tuple:
+    """Compute the number of unique values, the most frequent value (mode),
+    and the frequency of the most frequent value in a categorical dataset.
+
+    Args:
+        data: A sequence of categorical values.
+        n: The number of elements in data.
+    Returns:
+        A tuple containing:
+            - The count of unique values (int)
+            - The most frequent value (mode) (any type)
+            - The frequency of the most frequent value (int)
+    """
+    d = {}
+    for e in data:
+        d[e] = d.get(e, 0) + 1
+    stat_sorted = sorted(d.items(), key=lambda item: item[1], reverse=True)
+    unique_count = len(stat_sorted)
+    top_value = stat_sorted[0][0]
+    frequency = stat_sorted[0][1]
+    return (unique_count, top_value, frequency)
+
 
 def ft_statistics(*args: Any, n: int, **kwargs: Any) -> np.float64:
     """Compute and print selected statistics on a numeric dataset.
@@ -284,7 +306,8 @@ def ft_statistics(*args: Any, n: int, **kwargs: Any) -> np.float64:
                   'max': ft_max,
                   'unique': ft_unique,
                   'top': ft_top,
-                  'freq': ft_freq}
+                  'freq': ft_freq,
+                  'category': ft_category_statistics}
     for k, v in kwargs.items():
         if v in dispatcher:
             return dispatcher[v](args[0], n)
