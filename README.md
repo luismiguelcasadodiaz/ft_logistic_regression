@@ -83,5 +83,84 @@ ft_mean(squared_minus_mean, n)
 ```
 
 # Multivariate linear regression
+## Prediction
+The equation to predict the value (a real number) of the target variable for one element from the dataset, one student, is:
+$$h_\theta(x) = \theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_n x_n \qquad (1)$$
+where $\hat{y} = h_\theta(x)$ the target feature or prediction. Such prediction is a real number in linear regression.
 
-$$h_\theta(x) = \theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_n x_n$$
+We can consider the values of the features as a vector, as well as the coefficients' values:
+
+$$\boldsymbol{\theta} 
+= 
+\begin{bmatrix} 
+    \theta_0 \\ 
+    \theta_1 \\ 
+    \theta_2 \\ 
+    \vdots  \\ 
+    \theta_n 
+\end{bmatrix} 
+\in \mathbb{R}^{n+1} , \qquad 
+\boldsymbol{x} 
+= 
+\begin{bmatrix} 
+    x_0 \\
+    x_1 \\ 
+    x_2 \\ 
+    \vdots  
+    \\ x_n 
+\end{bmatrix}
+\in \mathbb{R}^{n+1}$$
+ and transform (1) into a vector multiplication.
+
+$$h_\theta(x) = \sum_{j=0}^{n}\theta_j x_j$$
+$$\boldsymbol{\theta} \cdot \boldsymbol{x} = \boldsymbol{\theta}^{T} \boldsymbol{x} = \begin{bmatrix} \theta_0 & \theta_1  & \dots & \theta_n \end{bmatrix} \begin{bmatrix} x_0 \\ x_1  \\ \vdots \\ x_n \end{bmatrix} = \sum_{j=0}^{n}\theta_j x_j$$
+
+
+Always $x_0 = 1$, so the product $x_0\theta_0$ returns $\theta_0$.
+
+When the dataset's size is $m$, we can write the vector holding $m$ predictions as the product of the feature matrix and the coefficients vector.
+$$\hat{y} = \boldsymbol{X} \boldsymbol{\theta}, \qquad 
+\begin{bmatrix} 
+    \hat{y}^{(1)} \\ 
+    \hat{y}^{(2)} \\ 
+    \vdots \\ 
+    \hat{y}^{(m)} 
+\end{bmatrix} 
+= 
+\begin{bmatrix}
+    1       & x_1^{(1)} & x_2^{(1)} & \dots     & x_n^{(1)} \\ 
+    1       & x_1^{(2)} & x_2^{(2)} & \dots     & x_n^{(2)} \\ 
+    \vdots  & \vdots    & \vdots    &\ddots\    & \vdots \\ 
+    1       & x_1^{(m)} & x_2^{(m)} & \dots     & x_n^{(m)}
+\end{bmatrix}
+\begin{bmatrix} 
+    \theta_0 \\ 
+    \theta_1 \\ 
+    \vdots \\ 
+    \theta_m 
+\end{bmatrix}$$
+
+where
+$$\hat{y}, \boldsymbol{\theta} \in \mathbb(R)^{m}, \qquad \boldsymbol{X} \in \mathbb{R}^{m \times (n+1)}$$
+## Cost function
+The cost function calculates the error between the predicted value and the real one.
+$$J(\boldsymbol{\theta})
+= 
+\frac{1}{2m} \sum_{i=1}^{m} \left(\hat{y}^{(i)} - y^{(i)}\right)^2
+=
+\frac{1}{2m} \sum_{i=1}^{m} \left(h_\theta{(x)^{(i)}} - y^{(i)}\right)^2
+=
+\frac{1}{2m} \sum_{i=1}^{m} \left(\boldsymbol{\theta}^{T}x^{(i)} - y^{(i)}\right)^2
+$$
+The addition of the squares of the components of a vector equals the scalar product of such vector with itself.
+
+$$
+\boldsymbol{e}
+=
+\begin{bmatrix} 
+    e^{(1)} \\ 
+    e^{(2)} \\ 
+    \vdots \\ 
+    e^{(m)} 
+\end{bmatrix} 
+$$
