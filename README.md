@@ -113,7 +113,8 @@ We can consider the values of the features as a vector, as well as the coefficie
     \vdots  
     \\ x_n 
 \end{bmatrix}
-\in \mathbb{R}^{n+1}```
+\in \mathbb{R}^{n+1}
+```
 
 and transform (1) into a vector multiplication.
 
