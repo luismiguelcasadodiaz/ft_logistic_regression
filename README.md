@@ -180,7 +180,7 @@ J(\boldsymbol{\theta})
 ```
 The addition of the squares of the components of a vector equals the scalar product of such vector with itself.
 
-$$
+```math
 \boldsymbol{e}
 =
 \begin{bmatrix} 
@@ -188,5 +188,50 @@ $$
     e^{(2)} \\ 
     \vdots \\ 
     e^{(m)} 
-\end{bmatrix} 
+\end{bmatrix}
+=
+\begin{bmatrix} 
+    \hat{y}^{(1)} - {y}^{(1)} \\ 
+    \hat{y}^{(2)} - {y}^{(2)} \\ 
+    \vdots \\ 
+    \hat{y}^{(m)} -{y}^{(m)} 
+\end{bmatrix}
+=
+\begin{bmatrix} 
+    h_\theta{(x)^{(1)}} - {y}^{(1)} \\ 
+    h_\theta{(x)^{(2)}} - {y}^{(2)} \\ 
+    \vdots \\ 
+    h_\theta{(x)^{(m)}} - {y}^{(m)} 
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \boldsymbol{\theta}x^{(1)} - {y}^{(1)} \\ 
+    \boldsymbol{\theta}x^{(2)} - {y}^{(2)} \\ 
+    \vdots \\ 
+    \boldsymbol{\theta}x^{(m)} - {y}^{(m)} 
+\end{bmatrix}
+\implies
+\boldsymbol{e} = \boldsymbol{X} \boldsymbol{\theta} - y
+```
 
+```math
+J(\boldsymbol{\theta})
+=
+\frac{1}{2m} \quad (\boldsymbol{X} \boldsymbol{\theta} - y)^{T}(\boldsymbol{X} \boldsymbol{\theta} - y)
+= 
+\frac{1}{2m} \quad \boldsymbol{e}^{T}\boldsymbol{e}
+=
+\frac{1}{2m} \quad (e^{(1)}e^{(1)} + e^{(2)}e^{(2)} + \dots + e^{(m)}e^{(m)})
+=
+\frac{1}{2m} \quad \sum_{i=1}^{m} \left(e^{(i)}\right)^2
+=
+\frac{1}{2m} \sum_{i=1}^{m} \left(\boldsymbol{\theta}^{T}x^{(i)} - y^{(i)}\right)^2
+```
+## Partial derivate of cost function
+```math
+J(\boldsymbol{\theta})
+=
+\frac{1}{2m} \sum_{i=1}^{m} \left(h_\theta{(x)^{(i)}} - y^{(i)}\right)^2
+=
+\frac{1}{2m} \sum_{i=1}^{m} \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)^2
+```
