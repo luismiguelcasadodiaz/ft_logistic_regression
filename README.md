@@ -228,6 +228,14 @@ J(\boldsymbol{\theta})
 \frac{1}{2m} \sum_{i=1}^{m} \left(\boldsymbol{\theta}^{T}x^{(i)} - y^{(i)}\right)^2
 ```
 ## Partial derivate of cost function
+
+
+```math
+\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+=
+\frac{1}{m} \sum_{i=1}^{m} \left(h_\theta{(x)^{(i)}} - y^{(i)}\right)x_j^{(i)}
+```
+Let's see the maths below it.
 ```math
 J(\boldsymbol{\theta})
 =
@@ -235,3 +243,32 @@ J(\boldsymbol{\theta})
 =
 \frac{1}{2m} \sum_{i=1}^{m} \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)^2
 ```
+### The derivate of a sum is the sum of derivates
+```math
+\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+=
+\frac{1}{2m} \sum_{i=1}^{m} \frac{\partial}{\partial \Theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)^2
+```
+
+### The derivate of the power of a function 
+Where $$f(u)= u^{2}$$ its derivate $$\frac{\partial}{\partial u} \left(u^{2}\right) = 2u\frac{\partial}{\partial u}$$ so:
+
+```math
+\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+=
+\frac{1}{2m} \sum_{i=1}^{m} 2 \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)\frac{\partial}{\partial \Theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)
+```
+### One more time: The derivate of a sum is the sum of derivates
+$$\frac{\partial}{\partial \Theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)=x_j^{(i)}$$
+
+```math
+\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+=
+\frac{1}{m} \sum_{i=1}^{m}  \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)x_j^{(i)}
+=
+\frac{1}{m} \sum_{i=1}^{m}  e^{(i)}x_j^{(i)}
+```
+We can affirm that the partial derivate is the escalar product of errors vector with one columns of features'value matrix.
+
+## The gradient
+The gradient is the vector that agrupates partial derivates
