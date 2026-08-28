@@ -58,7 +58,7 @@ v_minus_mean = [x - mean for x in data]
 ```
 
 #### 3.-Squared deviations
-```d_i^2 = (x_i - \bar{x})^2```
+$$d_i^2 = (x_i - \bar{x})^2$$
 ```python
 squared_minus_mean = [x * x for x in v_minus_mean]
 ```
@@ -69,6 +69,7 @@ squared_minus_mean = [x * x for x in v_minus_mean]
 
 ##### 4a.- Sample standard deviation (n - 1)
 I got 115.614301, the right value.
+
 $$s^2 = \frac{1}{n - 1} \sum_{i=1}^{n}(x_i - \bar{x})^2$$
 ```python
 ft_mean(squared_minus_mean, n - 1)
@@ -85,7 +86,9 @@ ft_mean(squared_minus_mean, n)
 # Multivariate linear regression
 ## Prediction
 The equation to predict the value (a real number) of the target variable for one element from the dataset, one student, is:
+
 $$h_\theta(x) = \theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_n x_n \qquad (1)$$
+
 where $\hat{y} = h_\theta(x)$ the target feature or prediction. Such prediction is a real number in linear regression.
 
 We can consider the values of the features as a vector, as well as the coefficients' values:
