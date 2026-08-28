@@ -174,7 +174,7 @@ Applying the chain rule with $u$ equal to the expression inside the parentheses 
 Where $$f(u)= u^{2}$$ its derivative $$\frac{\partial}{\partial u} \left(u^{2}\right) = 2u\frac{\partial}{\partial u}$$ so:
 
 ```math
-\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+\frac{\partial}{\partial \theta_j}J(\boldsymbol{\theta})
 =
 \frac{1}{2m} \sum_{i=1}^{m} 2 \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)\frac{\partial}{\partial \Theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)
 ```
