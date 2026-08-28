@@ -120,7 +120,21 @@ and transform (1) into a vector multiplication.
 
 $$h_\theta(x) = \sum_{j=0}^{n}\theta_j x_j$$
 
-```math\boldsymbol{\theta} \cdot \boldsymbol{x} = \boldsymbol{\theta}^{T} \boldsymbol{x} = \begin{bmatrix} \theta_0 & \theta_1  & \dots & \theta_n \end{bmatrix} \begin{bmatrix} x_0 \\ x_1  \\ \vdots \\ x_n \end{bmatrix} = \sum_{j=0}^{n}\theta_j x_j```
+```math
+\boldsymbol{\theta} \cdot \boldsymbol{x}
+=
+\boldsymbol{\theta}^{T} \boldsymbol{x}
+=
+\begin{bmatrix} 
+    \theta_0 & \theta_1  & \dots & \theta_n 
+\end{bmatrix}
+\begin{bmatrix} 
+    x_0 \\ 
+    x_1  \\ 
+    \vdots \\ 
+    x_n 
+\end{bmatrix} = \sum_{j=0}^{n}\theta_j x_j
+```
 
 
 Always $x_0 = 1$, so the product $x_0\theta_0$ returns $\theta_0$.
