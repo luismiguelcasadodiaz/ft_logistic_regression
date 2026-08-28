@@ -93,7 +93,8 @@ where $\hat{y} = h_\theta(x)$ the target feature or prediction. Such prediction 
 
 We can consider the values of the features as a vector, as well as the coefficients' values:
 
-$$\boldsymbol{\theta} 
+```math
+\boldsymbol{\theta} 
 = 
 \begin{bmatrix} 
     \theta_0 \\ 
@@ -112,11 +113,13 @@ $$\boldsymbol{\theta}
     \vdots  
     \\ x_n 
 \end{bmatrix}
-\in \mathbb{R}^{n+1}$$
- and transform (1) into a vector multiplication.
+\in \mathbb{R}^{n+1}```
+
+and transform (1) into a vector multiplication.
 
 $$h_\theta(x) = \sum_{j=0}^{n}\theta_j x_j$$
-$$\boldsymbol{\theta} \cdot \boldsymbol{x} = \boldsymbol{\theta}^{T} \boldsymbol{x} = \begin{bmatrix} \theta_0 & \theta_1  & \dots & \theta_n \end{bmatrix} \begin{bmatrix} x_0 \\ x_1  \\ \vdots \\ x_n \end{bmatrix} = \sum_{j=0}^{n}\theta_j x_j$$
+
+```math\boldsymbol{\theta} \cdot \boldsymbol{x} = \boldsymbol{\theta}^{T} \boldsymbol{x} = \begin{bmatrix} \theta_0 & \theta_1  & \dots & \theta_n \end{bmatrix} \begin{bmatrix} x_0 \\ x_1  \\ \vdots \\ x_n \end{bmatrix} = \sum_{j=0}^{n}\theta_j x_j```
 
 
 Always $x_0 = 1$, so the product $x_0\theta_0$ returns $\theta_0$.
