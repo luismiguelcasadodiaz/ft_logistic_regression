@@ -140,7 +140,8 @@ $$h_\theta(x) = \sum_{j=0}^{n}\theta_j x_j$$
 Always $x_0 = 1$, so the product $x_0\theta_0$ returns $\theta_0$.
 
 When the dataset's size is $m$, we can write the vector holding $m$ predictions as the product of the feature matrix and the coefficients vector.
-$$\hat{y} = \boldsymbol{X} \boldsymbol{\theta}, \qquad 
+```math
+\hat{y} = \boldsymbol{X} \boldsymbol{\theta}, \qquad 
 \begin{bmatrix} 
     \hat{y}^{(1)} \\ 
     \hat{y}^{(2)} \\ 
@@ -159,10 +160,13 @@ $$\hat{y} = \boldsymbol{X} \boldsymbol{\theta}, \qquad
     \theta_1 \\ 
     \vdots \\ 
     \theta_m 
-\end{bmatrix}$$
+\end{bmatrix}
+```
 
 where
+
 $$\hat{y}, \boldsymbol{\theta} \in \mathbb(R)^{m}, \qquad \boldsymbol{X} \in \mathbb{R}^{m \times (n+1)}$$
+
 ## Cost function
 The cost function calculates the error between the predicted value and the real one.
 ```math
