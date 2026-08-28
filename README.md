@@ -44,15 +44,13 @@ Heads up here. I got a difference of 0.144608 from the std calculated by the ori
 By default, pandas' `.std()` (and `.describe()`, which calls it internally) computes the sample standard deviation, dividing by `N-1` instead of `N`.
 
 #### 1.-Mean
-```math
-\bar{x}= \frac{1}{n} \sum_{i=1}^{n} x_i```
+$$\bar{x}= \frac{1}{n} \sum_{i=1}^{n} x_i$$
 ```python
 mean = sum(data) / n
 ```
 
 #### 2.-Deviations from the mean
-```math
-d_i = x_i - \bar{x}, \quad i = 1, \quad \dots \quad, n```
+$$d_i = x_i - \bar{x}, \quad i = 1, \quad \dots \quad, n$$
 
 
 ```python
