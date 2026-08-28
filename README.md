@@ -144,14 +144,15 @@ where
 $$\hat{y}, \boldsymbol{\theta} \in \mathbb(R)^{m}, \qquad \boldsymbol{X} \in \mathbb{R}^{m \times (n+1)}$$
 ## Cost function
 The cost function calculates the error between the predicted value and the real one.
-$$J(\boldsymbol{\theta})
+```math
+J(\boldsymbol{\theta})
 = 
 \frac{1}{2m} \sum_{i=1}^{m} \left(\hat{y}^{(i)} - y^{(i)}\right)^2
 =
 \frac{1}{2m} \sum_{i=1}^{m} \left(h_\theta{(x)^{(i)}} - y^{(i)}\right)^2
 =
 \frac{1}{2m} \sum_{i=1}^{m} \left(\boldsymbol{\theta}^{T}x^{(i)} - y^{(i)}\right)^2
-$$
+```
 The addition of the squares of the components of a vector equals the scalar product of such vector with itself.
 
 $$
@@ -163,4 +164,4 @@ $$
     \vdots \\ 
     e^{(m)} 
 \end{bmatrix} 
-$$
+
