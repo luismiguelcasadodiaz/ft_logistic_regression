@@ -1,6 +1,20 @@
 # ft_logistic_regression
 Data Science × Logistic Regression - "Harry Potter and the Data Scientist"
 
+## Overview
+ft_logistic_regression is an outercore project from 42 — a specialization project available once the Common Core is completed — belonging to the Algorithms, Artificial Intelligence and Data Science track. I must train a one-vs-all logistic regression multiclassifier, using gradient descent, on a multivariate dataset of 1,600 students. The classifier must reach a minimum accuracy score of 98%, according to scikit-learn's `accuracy_score`. At evaluation time, I must be able to explain how the machine learning model works.
+
+Before implementing the multiclassifier, some data analysis and visualization are required. The repository is organized as:
+- `Analysis/` — a from-scratch reimplementation of `pandas.DataFrame.describe()` (`describe.py`), plus a pandas-based reference version (`describe_pandas.py`) used to validate it.
+- `Visualization/` — exploratory plots over the training data: `histogram.py`, `scatter.py`, `pair_plot.py`.
+- `Regression/` — `logreg_train.py` and `logreg_predict.py`, which train and run the logistic regression model.
+- `Bonus/` — additional `describe()` statistics beyond the mandatory scope.
+- `docs/` — the project subject (`en.subject.pdf`) and `linear_regression.md`, a from-first-principles derivation of the cost function and gradient that the model is built on.
+- `datasets/` — the training and test CSVs.
+- `aux_funcs/` — shared helper functions.
+
+Run `make help` to see all available commands: setting up the Python environment, running the descriptive-statistics and visualization scripts, and training/predicting with the model.
+
 ## Data Analysis
 
 I figured out the data structure supporting my describe() output as a Pandas DataFrame. So I created a Zero-filled DataFrame whose index labels had the name of the calculated statistic.
@@ -83,3 +97,18 @@ $$s^2 = \frac{1}{n} \sum_{i=1}^{n}(x_i - \bar{x})^2$$
 ft_mean(squared_minus_mean, n)
 ```
 
+## Visualization
+### Histogram
+`Visualization/histogram.py` draws one histogram per course, overlaying all four Hogwarts houses on the same axes so their score distributions can be compared at a glance. For each of the 13 courses, it plots each house's grades as a semi-transparent histogram on its own subplot, sharing a single legend and a common y-axis scale (capped at 120) across the whole grid for a fair comparison.
+
+With this chart we can answer the subject question: Which Hogwarts course has a homogeneous score distribution between all four houses?
+
+![Hogwarts course histograms by house](media/Hogwarts_Course_Histograms_by_House.png)
+
+The goal is to spot, visually, which course has a score distribution that looks the same across all four houses — such a course carries little information for telling the houses apart and would make a poor feature for the classifier.
+
+The answer is: "Aritmancy" and "Care of magical creatures" are courses with homogeneous score distribution in the four houses.
+
+Run it with `make histogram` (uses `datasets/dataset_train.csv`), or directly via `python3 Visualization/histogram.py <dataset_file>`.
+### Scatter plot
+### Pair plot
