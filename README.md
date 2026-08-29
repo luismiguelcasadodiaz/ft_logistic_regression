@@ -103,7 +103,7 @@ ft_mean(squared_minus_mean, n)
 
 With this chart we can answer the subject question: Which Hogwarts course has a homogeneous score distribution between all four houses?
 
-![Hogwarts course histograms by house](media/Hogwarts_Course_Histograms_by_House.png)
+![Hogwarts course histograms by house](https://github.com/luismiguelcasadodiaz/ft_logistic_regression/blob/main/media/Hogwarts_Course_Histograms_by_House.png)
 
 The goal is to spot, visually, which course has a score distribution that looks the same across all four houses — such a course carries little information for telling the houses apart and would make a poor feature for the classifier.
 
