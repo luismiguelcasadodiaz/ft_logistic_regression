@@ -149,7 +149,7 @@ J(\boldsymbol{\theta})
 To find the coefficients that minimize the cost function, I need to know how $J(\boldsymbol{\theta})$ changes as each individual coefficient $\theta_j$ changes — that's exactly what $\frac{\partial}{\partial \theta_j}J(\boldsymbol{\theta})$ gives me. The steps below expand $J(\boldsymbol{\theta})$ back into its sum-of-squares form and apply the chain rule to reach a closed expression for this derivative.
 
 ```math
-\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+\frac{\partial}{\partial \theta_j}J(\boldsymbol{\theta})
 =
 \frac{1}{m} \sum_{i=1}^{m} \left(h_\theta\left(\boldsymbol{x}^{(i)}\right) - y^{(i)}\right)x_j^{(i)}
 ```
@@ -164,9 +164,9 @@ J(\boldsymbol{\theta})
 ### The derivative of a sum is the sum of derivatives
 This uses the sum rule: since $J(\boldsymbol{\theta})$ is a sum over $m$ terms, each term can be differentiated independently and the results added, instead of differentiating the whole sum at once.
 ```math
-\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+\frac{\partial}{\partial \theta_j}J(\boldsymbol{\theta})
 =
-\frac{1}{2m} \sum_{i=1}^{m} \frac{\partial}{\partial \Theta_j}\left[\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right]^2
+\frac{1}{2m} \sum_{i=1}^{m} \frac{\partial}{\partial \theta_j}\left[\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right]^2
 ```
 
 ### The derivative of the power of a function
@@ -179,10 +179,10 @@ Where $$f(u)= u^{2}$$ its derivative $$\frac{\partial}{\partial u} \left(u^{2}\r
 \frac{1}{2m} \sum_{i=1}^{m} 2 \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)\frac{\partial}{\partial \Theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)
 ```
 ### One more time: The derivative of a sum is the sum of derivatives
-$$\frac{\partial}{\partial \Theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)=x_j^{(i)}$$
+$$\frac{\partial}{\partial \theta_j}\left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)=x_j^{(i)}$$
 
 ```math
-\frac{\partial}{\partial \Theta_j}J(\boldsymbol{\theta})
+\frac{\partial}{\partial \theta_j}J(\boldsymbol{\theta})
 =
 \frac{1}{m} \sum_{i=1}^{m}  \left(\theta_0 x_0^{(i)} + \theta_1 x_1^{(i)} + \theta_2 x_2^{(i)} + \dots + \theta_n x_n^{(i)}  - y^{(i)}\right)x_j^{(i)}
 =
@@ -288,3 +288,11 @@ With a unique matrix operation we calculate simultaneously the adjust for all pa
 After the replacement of $$\boldsymbol{e} = \boldsymbol{X} \boldsymbol{\theta} - \boldsymbol{y}$$ the gradient becomes $$\nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta})=\frac{1}{m}\boldsymbol{X}^{T}\left(\boldsymbol{X} \boldsymbol{\theta} - \boldsymbol{y} \right)$$
 
 This is the practical payoff of the vectorized form: one matrix multiplication computes the gradient for every coefficient at once, without an explicit loop over $n$ or $m$ — simpler to implement and much faster than a naive Python loop.
+
+## Gradient descent
+Gradient descent is the algorithm that actually uses this gradient to find the coefficients $\boldsymbol{\theta}$ that minimize the cost function. Since $\nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta})$ points in the direction where $J$ increases fastest, moving $\boldsymbol{\theta}$ a small step in the opposite direction is guaranteed to decrease the cost, at least locally. Starting from some initial guess (often all zeros), the algorithm repeatedly applies the update rule $\boldsymbol{\theta_{k + 1}} := \boldsymbol{\theta_{k}} - \alpha \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta})$, where $\alpha$ is the learning rate: a small positive number that controls how large each step is. Too small an $\alpha$ makes convergence painfully slow; too large an $\alpha$ can overshoot the minimum and cause the cost to oscillate or even diverge. Because $J(\boldsymbol{\theta})$ for linear regression is a convex bowl-shaped function, this process is guaranteed to converge toward the single global minimum — the point where the gradient is zero and no further step improves the predictions — as long as $\alpha$ is chosen well and the algorithm is run for enough iterations. Since this derivation uses the whole dataset $\boldsymbol{X}$ in every update, each iteration here is also a full pass over the data — what's commonly called an epoch.
+
+$$\boldsymbol{\theta_{k+1}} := \boldsymbol{\theta_{k}} - \alpha \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta}) :=\boldsymbol{\theta_{k}} - \alpha \cdot \frac{1}{m}\boldsymbol{X}^{T}(\boldsymbol{X}\boldsymbol{\theta} - \boldsymbol{y})$$
+
+### Stoppping Criteria
+#### Change threshold
