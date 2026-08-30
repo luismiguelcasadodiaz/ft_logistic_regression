@@ -21,13 +21,16 @@ I figured out the data structure supporting my describe() output as a Pandas Dat
 
 ```python
 df = pd.read_csv(dataset_path)
-desc_index = ['count', 'unique', 'top', 'freq', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
+desc_index = ['count', 'unique', 'top', 'freq', 'mean', 'std', 'min', '25%', '50%', '75%', 'max', 'range']
 desc_columns = df.columns.tolist()
 desc= pd.DataFrame(np.zeros((len(desc_index), len(desc_columns))), index=desc_index, columns=desc_columns)
 # Initialize an empty DataFrame for descriptive stats
 ```
+I added `range` thinking in future data normalization.
 
-### top
+
+
+### Unique, top, and freq
 I started this calculation with a discrepancy from Pandas' describe() output. My first approach returned `Allan` as the top/most frequent value with two occurrences. This contradicted Pandas' official describe() output, which returned `Nathanael`.
 
 Pandas' describe() tie-breaks with first-seen order. This is the same behaviour as the `Counter` class from the `collections` library, which I used.
@@ -97,13 +100,33 @@ $$s^2 = \frac{1}{n} \sum_{i=1}^{n}(x_i - \bar{x})^2$$
 ft_mean(squared_minus_mean, n)
 ```
 
+
+### Not available values
+Let's call truant the one who no shows at examns. 
+We notice in describe's output that `count` is different in different courses. It is due to the fact that describe() does not count `NaN` values.
+
+![Dataset_train_describe](media/dataset_train_describe.png)
+
+I wrote a `truants.py` script to study no-shows. I discovered that i have 349 students that have not show at least one course's exam. it is a 21,81% of dataset records.
+
+I do not want to throw such amout of information, so i replace the missin value.
++ Replace Nan by zero is not fair. course's scores ranges include negative values. It is an arbitrary choose.
++ Replace Nan with a `smaller than minimal score'(centinel) would teach the model that this student performs worse than any one in the class. I have not evidence for sych hypotesis. Doing that i introduce a Bias inti the model. Additional the centinel distorts normalization scale per feature differently.
++ Replace Nan with per-feature mean and add a new feature "was missing" indicator column per feature.
+```python
+# Adds a binary "was missing" colums
+df[f"{feature}_missing"] = df[feature].isna().astype(int)
+# substitues NaN by mean of this feature.
+df[feature] = df[feature].fillna(desc.at['mean',feature])
+```
+
 ## Visualization
 ### Histogram
 `Visualization/histogram.py` draws one histogram per course, overlaying all four Hogwarts houses on the same axes so their score distributions can be compared at a glance. For each of the 13 courses, it plots each house's grades as a semi-transparent histogram on its own subplot, sharing a single legend and a common y-axis scale (capped at 120) across the whole grid for a fair comparison.
 
 With this chart we can answer the subject question: Which Hogwarts course has a homogeneous score distribution between all four houses?
 
-![Hogwarts course histograms by house](https://github.com/luismiguelcasadodiaz/ft_logistic_regression/blob/main/media/Hogwarts_Course_Histograms_by_House.png)
+![Hogwarts course histograms by house](media/Hogwarts_Course_Histograms_by_House.png)
 
 The goal is to spot, visually, which course has a score distribution that looks the same across all four houses — such a course carries little information for telling the houses apart and would make a poor feature for the classifier.
 
@@ -111,4 +134,13 @@ The answer is: "Aritmancy" and "Care of magical creatures" are courses with homo
 
 Run it with `make histogram` (uses `datasets/dataset_train.csv`), or directly via `python3 Visualization/histogram.py <dataset_file>`.
 ### Scatter plot
+
+What are the two features that are similar? 
+
+![Hogwarts course scatter plot](media/Hogwarts_Courses_Scatter_plots_color.png)
+
+If you look at the intersections between row Astron (Astronomy) / column Defens (efense Against the Dark Arts) (and vice versa at row Defens / column Astron), the points collapse into a perfect, razor-thin straight line with a negative slope.
+
+This indicates a perfect linear relationship ($r = -1.0$) between the two courses, meaning they convey identical information and one can be removed.
+
 ### Pair plot
