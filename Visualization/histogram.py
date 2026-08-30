@@ -19,9 +19,13 @@ def main(dataset_path):
 
     for i, course in enumerate(courses):
         ax = axes[i]
+        records=0
         for house in houses:
             house_data = df[df['Hogwarts House'] == house][course].dropna()
+
             ax.hist(house_data, bins=30, alpha=0.5, label=house)
+            records += len(house_data)
+        print(f"Course: {course}, Data Count: {records}")
         ax.set_title(f'{course}', fontsize=10)
         # ax.set_xlabel(course, fontsize=8)
         if i % 4 == 0:
