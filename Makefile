@@ -18,6 +18,10 @@ describe_test: ## Show descriptive analysis of dataset_test.csv
 describe_train: ## Show descriptive analysis of dataset_train.csv
 	python3 Analysis/describe.py datasets/dataset_train.csv
 
+.PHONY: truants
+truants: ## Studies NaN values
+	python3 Analysis/truants.py datasets/dataset_train.csv
+
 .PHONY: histogram
 histogram: ## Show histogram of dataset_train.csv
 	python3 Visualization/histogram.py datasets/dataset_train.csv
@@ -35,8 +39,8 @@ scatter_test: ## Show scatter of dataset_test.csv
 	python3 Visualization/scatter.py datasets/dataset_test.csv
 
 .PHONY: scatter_train
-scatter_train: ## Show scatter of dataset_train.csv
-	python3 Visualization/scatter.py datasets/dataset_train.csv
+scatter_train: ## Show scatter of dataset_train_normalized.csv
+	python3 Visualization/scatter.py datasets/dataset_train_normalized.csv
 
 
 .PHONY: train
