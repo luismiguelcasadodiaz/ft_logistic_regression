@@ -144,3 +144,9 @@ If you look at the intersections between row Astron (Astronomy) / column Defens 
 This indicates a perfect linear relationship ($r = -1.0$) between the two courses, meaning they convey identical information and one can be removed.
 
 ### Pair plot
+
+
+## Regression
+
+![Mathamatical support for multivariate linear regresion](docs/linear_regression.md)
+![Mathamatical support for multivariate logistic regresion](docs/logisitc_regression.md)
