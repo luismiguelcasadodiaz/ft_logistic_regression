@@ -148,5 +148,6 @@ This indicates a perfect linear relationship ($r = -1.0$) between the two course
 
 ## Regression
 
-![Mathamatical support for multivariate linear regresion](docs/linear_regression.md)
-![Mathamatical support for multivariate logistic regresion](docs/logisitc_regression.md)
+![Mathematical support for multivariate linear regresion](docs/linear_regression.md)
+
+![Mathematical support for multivariate logistic regresion](docs/logisitc_regression.md)

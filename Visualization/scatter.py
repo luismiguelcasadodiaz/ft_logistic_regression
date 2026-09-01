@@ -30,7 +30,8 @@ def main(dataset_path):
         for j in range(n_courses):
             idx = i * n_courses + j
             ax = axes[idx]
-            ax.scatter(df[courses[j]], df[courses[i]], marker='.', s=1, c=colors)
+            if j <= i:
+                ax.scatter(df[courses[j]], df[courses[i]], marker='.', s=1, c=colors)
             if idx % n_courses == 0:
                 ax.set_ylabel(courses[i][0:6], fontsize=8)
                 ax.tick_params(axis='y', labelsize=6)

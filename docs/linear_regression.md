@@ -295,4 +295,43 @@ Gradient descent is the algorithm that actually uses this gradient to find the c
 $$\boldsymbol{\theta_{k+1}} := \boldsymbol{\theta_{k}} - \alpha \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta}) :=\boldsymbol{\theta_{k}} - \alpha \cdot \frac{1}{m}\boldsymbol{X}^{T}(\boldsymbol{X}\boldsymbol{\theta} - \boldsymbol{y})$$
 
 ### Stoppping Criteria
-#### Change threshold
+#### Threshold on the change in the cost function.
+This is the classic, most intuitive method. It consists of monitoring the value of the cost function 
+$J(\boldsymbol{\theta})$ after each epoch and measuring how much it decreases relative to the previous epoch:
+
+$$\Delta J < tol$$
+$$\|J(\boldsymbol{\theta}^{(k + 1)}) - J(\boldsymbol{\theta^{k}}) \| < tol $$
+
+As we get closer to the minimum, the cost surface flattens out and the improvements between steps become microscopic.
+Typical tolerance (tol or $\epsilon$) are values such as 1e-4 ($0.0001$) or 1e-6. If the reduction is smaller than tol, it is assumed that we have reached the bottom of the valley and the loop is stopped.
+
+#### Magnitude or norm of the Gradient vector.
+At the global minimum of a convex function, the theoretical derivative is exactly zero ($\nabla J(\boldsymbol{\theta}) = 0$. We compute the Euclidean (L2) norm of the resulting gradient vector:
+```math
+\|\nabla J(\boldsymbol{\theta})\|_2 < Tolerance \\
+\sqrt{\sum_{i=0}^{n} \left(\frac{\partial J(\boldsymbol{\theta})}{\partial \theta_j}\right)^2}< Tolerance \\
+\sqrt{
+    \left(\frac{\partial J(\boldsymbol{\theta})}{\partial \theta_0}\right)^2 +
+    \left(\frac{\partial J(\boldsymbol{\theta})}{\partial \theta_1}\right)^2 +
+    \dots + 
+    \left(\frac{\partial J(\boldsymbol{\theta})}{\partial \theta_n}\right)^2
+    } < Tolerance \\
+```
+
+If $\|\nabla J(\boldsymbol{\theta})\| < tol (for example, tol = 1e-5), it means the slope in every direction is essentially zero, so the algorithm no longer has any direction in which to descend.
+
+#### Parametres displacement
+It consists of measuring the Euclidean distance the weights have moved between two consecutive iterations:
+```math
+\|\Delta\boldsymbol{\theta} \| < Tolerance \\
+\| \boldsymbol{\theta}^{(k + 1)}  - \boldsymbol{\theta}^{k} \| < Tolerance  \\
+\| - \alpha \nabla J({\boldsymbol{\theta}})  \| < Tolerance
+```
+
+Since $\boldsymbol{\theta}^{(k + 1)}  - \boldsymbol{\theta}^{k} = - \alpha \nabla J({\boldsymbol{\theta}})$, this criterion is directly related to the norm of the gradient multiplied by the learning rate $\alpha$. If the parameters barely change position in the search space, continuing to iterate is computationally redundant.
+
+#### Early Stopping with a validation set
+In real Machine Learning projects, training until the training cost is minimized can lead to overfitting. For this reason, the Early Stopping mechanism is used:
+
+Validation set: The loss $J_val$  is computed on a separate dataset that the model does not use to calculate the gradients.
+Patience mechanism: A counter is defined (e.g., patience = 5). If the validation loss does not improve for 5 consecutive epochs, training is interrupted and the weights θ from the best saved epoch are restored.
