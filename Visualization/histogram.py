@@ -7,6 +7,24 @@ from aux_funcs.file_func import path_test  # noqa: E402
 
 
 def main(dataset_path):
+    """Plot per-course grade histograms overlaid by Hogwarts House.
+
+    Reads the dataset and lays out a 4x4 grid of subplots, one per course
+    (columns from index 6 onward), hiding any unused slots. For each
+    course, overlays a semi-transparent histogram of that course's grades
+    for every house on the same axes, printing the number of non-NaN
+    records plotted per course, and shares a single legend and a common
+    y-axis scale (capped at 120) across all subplots for a fair visual
+    comparison. The figure is saved to
+    "media/Hogwarts_Course_Histograms_by_House.png" and then displayed.
+
+    Args:
+        dataset_path: The path to the CSV dataset file to visualize.
+
+    Returns:
+        None. Prints per-course record counts to stdout, saves the
+        figure to disk, and displays it in a window.
+    """
     print("Histogram Visualization")
     df = pd.read_csv(dataset_path)
 
@@ -19,7 +37,7 @@ def main(dataset_path):
 
     for i, course in enumerate(courses):
         ax = axes[i]
-        records=0
+        records = 0
         for house in houses:
             house_data = df[df['Hogwarts House'] == house][course].dropna()
 
@@ -46,12 +64,12 @@ def main(dataset_path):
     for j in range(len(courses), len(axes)):
         fig.delaxes(axes[j])
 
-    
     plt.subplots_adjust(hspace=0.293,
                         wspace=0.136,
                         top=0.88,
                         left=0.03,
                         right=0.988)
+    plt.savefig('media/Hogwarts_Course_Histograms_by_House.png', dpi=300)
     plt.show()
 
 
