@@ -187,17 +187,15 @@ def ft_normalize_data(dataset_path: str, desc: pd.DataFrame) -> pd.DataFrame:
             # Adds a binary "was missing" colums
             df[f"{feature}_missing"] = df[feature].isna().astype(int)
             # substitues NaN by mean of this feature.
-            df[feature] = df[feature].fillna(desc.at['mean',feature])
+            df[feature] = df[feature].fillna(desc.at['mean', feature])
         min_val = desc.at['min', feature]
         range_val = desc.at['range', feature]
         df[feature] = (df[feature] - min_val) / range_val
-        """
-        if pd.isna(min_val) or pd.isna(range_val) or range_val == 0:
-            # Avoid division by zero or invalid normalization
-            df[feature] = np.nan
-        else:
-            df[feature] = (df[feature] - min_val) / range_val
-        """
+    df["Best Hand"] = (df["Best Hand"] == "Right").astype(int)
+    years_txt = list(df["Birthday"].unique())
+    years = sorted(list(set([int(x[0:4]) for x in years_txt])))
+    df["Birthday"] = df["Birthday"].str[:4].astype(int)
+    df["Birthday"] = (df["Birthday"] - min(years)) / (max(years) - min(years))
     return df
 
 
@@ -227,8 +225,11 @@ def main(path: str):
     pd.set_option('display.max_rows', None)
     desc = ft_describe(path)
     print(desc.to_string(formatters={col: fmt for col in desc.columns}))
-    file = os.path.splitext(os.path.basename(path))[0] + "_describe.txt"
-    with open(file, "w") as f:
+    new_path = os.path.join(
+        os.path.dirname(path),
+        os.path.splitext(os.path.basename(path))[0] + "_describe.txt"
+    )
+    with open(new_path, "w") as f:
         f.write(desc.to_string())
 
     normalized_data = ft_normalize_data(path, desc)

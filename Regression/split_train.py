@@ -40,7 +40,7 @@ def main(dataset_path: str, percentage: float):
         # metrics[house] accumulates [count, pct] triples in this order:
         # [0] = original dataset, [1] = training set, [2] = test set
         metrics[house] = [[len(group), len(group)/len(df)*100]]
-        # Shuffle the group
+        # Shuffle group returning 'frac` rows, creating new idx, droping olds
         group = group.sample(frac=1, random_state=42).reset_index(drop=True)
         train_size = int(len(group) * (percentage / 100))
         train_subsets[house] = group.iloc[:train_size]
@@ -60,6 +60,7 @@ def main(dataset_path: str, percentage: float):
         test_subsets.values()).sample(
             frac=1,
             random_state=42).reset_index(drop=True)
+
     for house, group in test_df.groupby('Hogwarts House'):
         metrics[house].append([len(group), len(group)/len(test_df)*100])
     for k, v in metrics.items():

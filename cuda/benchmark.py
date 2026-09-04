@@ -6,6 +6,7 @@ import time
 import numpy as np
 import torch
 
+
 def benchmark_cpu(size, dtype=np.float32, n_runs=3):
     """Matrix multiply on CPU using NumPy."""
     a = np.random.rand(size, size).astype(dtype)
@@ -52,11 +53,13 @@ def main():
     device = torch.device("cuda:0")
     gpu_name = torch.cuda.get_device_name(device)
     print(f"GPU detected: {gpu_name}")
-    print(f"PyTorch version: {torch.__version__}, CUDA: {torch.version.cuda}\n")
+    print(f"PyTorch version: {torch.__version__}, \
+          CUDA: {torch.version.cuda}\n")
 
     sizes = [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
 
-    print(f"{'Size':>6} | {'CPU (s)':>10} | {'GPU (s)':>10} | {'Speedup':>8}")
+    print(f"{'Size':>6} | {'CPU (s)':>10} | {'GPU (s)':>10} | \
+          {'Speedup':>8}")
     print("-" * 45)
 
     for size in sizes:
@@ -68,7 +71,8 @@ def main():
             continue
 
         speedup = cpu_time / gpu_time
-        print(f"{size:>6} | {cpu_time:>10.5f} | {gpu_time:>10.5f} | {speedup:>7.2f}x")
+        print(f"{size:>6} | {cpu_time:>10.5f} | {gpu_time:>10.5f} | \
+              {speedup:>7.2f}x")
 
 
 if __name__ == "__main__":

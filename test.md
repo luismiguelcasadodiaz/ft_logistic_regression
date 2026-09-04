@@ -1,0 +1,1 @@
+$$\|\nabla J(\boldsymbol{\theta})\|_2 = \sqrt{\sum_{i=0}^{n} \left(\frac{\partial J(\boldsymbol{\theta})}{\partial \theta_j}\right)^2}$$

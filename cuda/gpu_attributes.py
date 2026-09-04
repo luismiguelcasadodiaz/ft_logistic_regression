@@ -1,6 +1,7 @@
 import subprocess
 import sys
 
+
 def query_gpu_nvidia_smi():
     """Query GPU info via nvidia-smi (works for NVIDIA GPUs)."""
     try:
@@ -10,7 +11,8 @@ def query_gpu_nvidia_smi():
             "power.limit,clocks.sm,clocks.mem"
         )
         result = subprocess.run(
-            ["nvidia-smi", f"--query-gpu={query}", "--format=csv,noheader,nounits"],
+            ["nvidia-smi", f"--query-gpu={query}",
+             "--format=csv,noheader,nounits"],
             capture_output=True, text=True, check=True
         )
         headers = query.split(",")
@@ -21,6 +23,7 @@ def query_gpu_nvidia_smi():
         return gpus
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
+
 
 def query_gpu_pynvml():
     """Query GPU info via pynvml (more detailed, NVIDIA only)."""
@@ -38,21 +41,25 @@ def query_gpu_pynvml():
                 "memory_total_MB": mem.total // (1024 ** 2),
                 "memory_used_MB": mem.used // (1024 ** 2),
                 "memory_free_MB": mem.free // (1024 ** 2),
-                "temperature_C": pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU),
-                "utilization_%": pynvml.nvmlDeviceGetUtilizationRates(handle).gpu,
+                "temperature_C": pynvml.nvmlDeviceGetTemperature(
+                    handle, pynvml.NVML_TEMPERATURE_GPU),
+                "utilization_%": pynvml.nvmlDeviceGetUtilizationRates(
+                    handle).gpu,
                 "power_W": pynvml.nvmlDeviceGetPowerUsage(handle) / 1000,
             })
         pynvml.nvmlShutdown()
         return gpus
     except ImportError:
-        print("pynvml not installed (pip install nvidia-ml-py)", file=sys.stderr)
+        print("pynvml not installed (pip install nvidia-ml-py)",
+              file=sys.stderr)
         return None
     except Exception as e:
         print(f"pynvml error: {e}", file=sys.stderr)
         return None
 
+
 def query_gpu_torch():
-    """Query GPU info via PyTorch (if installed) — cross-platform (CUDA/MPS)."""
+    """Query GPU info via PyTorch (if installed) — cross-platform (CUDA/MPS)"""
     try:
         import torch
         gpus = []
@@ -71,6 +78,7 @@ def query_gpu_torch():
         return gpus if gpus else None
     except ImportError:
         return None
+
 
 if __name__ == "__main__":
     print("=== nvidia-smi ===")

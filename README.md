@@ -119,6 +119,63 @@ df[f"{feature}_missing"] = df[feature].isna().astype(int)
 # substitues NaN by mean of this feature.
 df[feature] = df[feature].fillna(desc.at['mean',feature])
 ```
+### Normalization
+
+
+
+#### Numeric columns
+
+The numeric columns are : Arithmancy,Astronomy,Herbology,Defense Against the Dark Arts,Divination,Muggle Studies,Ancient Runes,History of Magic,Transfiguration,Potions,Care of Magical Creatures,Charms,Flying
+
+I used the outcome of ft_describe() to apply a `Max - Min` normalization to Numerical columns
+```python
+min_val = desc.at['min', feature]
+range_val = desc.at['range', feature]
+df[feature] = (df[feature] - min_val) / range_val
+```
+
+#### Best Hand
+
+Best Hand feature holds only two values `Left` and `Right`. I encoded labels wiht integers values. `Left` wiht zero and `Right` wiht one.
+``` python
+df["Best Hand"] = (df["Best Hand"] == "Right").astype(int)
+```
+#### Birthday
+Students were born in six different years:
+[1996, 1997, 1998, 1999, 2000, 2001]
+
+```python
+years = sorted(list(set([int(x[0:4]) for x in list(df["Birthday"].unique())])))
+df["Birthday"] = df["Birthday"].str[:4].astype(int)
+df["Birthday"] = (df["Birthday"] - min(years)) / (max(years) - min(years))
+```
+
+### Category imbalance
+
+Our 1600 samples dataset to train the classifier has 4 imbalanced categories
+
+```bash
+Hufflepuff    529
+Ravenclaw     443
+Gryffindor    327
+Slytherin     301
+```
+It is a mild-to-moderate imbalance with specific effects worth knowing.
+
+Following `one versus all` estrategy impliens traing 4 binary classifiers
+
+|Classifier        |Samples| %    |Ratio  |
+|------------------|-------|--    |-------|
+|Hufflepuff vs rest|    529|33.06%|$\frac{529}{1071}=\frac{1}{2.02}$|
+|Ravenclaw vs  rest|    443|27.68%|$\frac{443}{1154}=\frac{1}{2.60}$|
+|Gryffindor vs rest|    327|20.43%|$\frac{327}{1273}=\frac{1}{3.39}$|
+|Slytherin vs  rest|    301|18.81%|$\frac{301}{1071}=\frac{1}{3.55}$|
+
+Each binary classifier is itself imbalanced. Slytherin will see far more negative examples that positive ones.
+
+Consecuences
++ 1.- **biased decision boundaries** - `Slytherin-vs-rest`classifier will be pulled to predicting `Rest` since minimizing overall error is easier favoring the majority side. THis lowers recall for this category.
++ 2.- **Incomparabel scores across classifiers** - `One versus all` compares 4 binary classfiers probabilities. As each was trained wiht a different $\frac{pos}{neg} ratio, theri output scores are not on the same scale. `Hufflepuff-vs-rest` classifier may systematically output highr confidence than `Slytherin-vs-rest` one, even when Slytheirn os atually correct.  It is a cross-classifier score comparability at prediciton time.
 
 ## Visualization
 ### Histogram
@@ -148,6 +205,27 @@ This indicates a perfect linear relationship ($r = -1.0$) between the two course
 
 ## Regression
 
+
+
 ![Mathematical support for multivariate linear regresion](docs/linear_regression.md)
 
 ![Mathematical support for multivariate logistic regresion](docs/logisitc_regression.md)
+
+### Split dataset
+I must preserve proportions of categories in the original dataset when spliting it into a train dataset and an test dataset.
+
+I stratity the original dataset. I group records by "Hogwarts House" categories. I split each group and concatenate resulting datasets
+
+```python
+train_subsets = {}
+test_subsets = {}
+for house, group in df.groupby('Hogwarts House'):
+    # Shuffle the group returning 'frac` rows, creating new idx, droping olds
+    group = group.sample(frac=1, random_state=42).reset_index(drop=True)
+    train_size = int(len(group) * (percentage / 100))
+    train_subsets[house] = group.iloc[:train_size]
+    test_subsets[house] = group.iloc[train_size:]
+```
+Resulting dataset are saved into darasets folder as:
++ dataset_train_normalized_to_train.csv
++ dataset_train_normalized_to_test.csv
