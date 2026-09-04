@@ -2,7 +2,7 @@
 
 .DEFAULT_GOAL := help
 environment := ft_log_reg
-
+TRAIN_PCT ?= 80
 
 .PHONY: help
 help: ## Show this help menu
@@ -42,6 +42,9 @@ scatter_test: ## Show scatter of dataset_test.csv
 scatter_train: ## Show scatter of dataset_train_normalized.csv
 	python3 Visualization/scatter.py datasets/dataset_train_normalized.csv
 
+.PHONY: split_train
+split_train: ## Split dataset_train.csv into train and validation sets
+	python3 Regression/split_train.py datasets/dataset_train_normalized.csv $(TRAIN_PCT)
 
 .PHONY: train
 train: ## Train multi-classifier using a logistic regression one-vs-all approach
