@@ -242,7 +242,7 @@ def ft_freq(data: Any, n: int) -> float:
     return ft_category_statistics(data, n)[2]
 
 
-def ft_category_statistics(data: Any, n: int) -> tuple:
+def ft_category_statistics(data: Any, n: int) -> tuple[int, str, int]:
     """Compute the number of unique values, the most frequent value (mode),
     and the frequency of the most frequent value in a categorical dataset.
 
