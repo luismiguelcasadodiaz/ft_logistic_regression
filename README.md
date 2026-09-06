@@ -15,6 +15,43 @@ Before implementing the multiclassifier, some data analysis and visualization ar
 
 Run `make help` to see all available commands: setting up the Python environment, running the descriptive-statistics and visualization scripts, and training/predicting with the model.
 
+
+## Pipeline de datos
+
+The following diagram describes the flow of files and scripts in the project, from the raw training dataset to the final predictions.
+
+```mermaid
+flowchart TD
+    A[("dataset_train.csv")] --> P1["describe.py"]
+    P1 --> B[("dataset_train_describe.txt")]
+    P1 --> C[("dataset_train_normalized.csv")]
+
+    C --> P2["split.py"]
+    P2 --> D[("dataset_train_normalized_to_train.csv")]
+    P2 --> E[("dataset_train_normalized_to_test.csv")]
+
+    D --> P3["train.py"]
+    P3 --> F[("weigths.json")]
+
+    E --> P4["test.py"]
+    F --> P4
+    P4 --> G[("scores.txt")]
+
+    H[("dataset_test.csv")] --> P5["predict.py"]
+    B --> P5
+    F --> P5
+    P5 --> I[("Predictions.txt")]
+```
+
+**Stage description:**
+
+1. **`describe.py`** — from `dataset_train.csv`, generates the dataset statistics (`dataset_train_describe.txt`) and a normalized version (`dataset_train_normalized.csv`).
+2. **`split.py`** — splits `dataset_train_normalized.csv` into a training set (`dataset_train_normalized_to_train.csv`) and a test set (`dataset_train_normalized_to_test.csv`).
+3. **`train.py`** — trains the model on `dataset_train_normalized_to_train.csv` and produces the weights (`weigths.json`).
+4. **`test.py`** — evaluates the model using `dataset_train_normalized_to_test.csv` and `weigths.json`, generating `scores.txt`.
+5. **`predict.py`** — uses `dataset_test.csv`, `dataset_train_describe.txt`, and `weigths.json` to generate `Predictions.txt`.
+
+
 ## Data Analysis
 
 I figured out the data structure supporting my describe() output as a Pandas DataFrame. So I created a Zero-filled DataFrame whose index labels had the name of the calculated statistic.
