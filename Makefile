@@ -3,20 +3,20 @@
 .DEFAULT_GOAL := help
 environment := ft_log_reg
 TRAIN_PCT ?= 80
+EPOCHS ?= 30000
+LEARNING_RATE ?= 0.01
+TOLERANCE ?= 1e-6
 
 .PHONY: help
 help: ## Show this help menu
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-.PHONY: describe_test
-describe_test: ## Show descriptive analysis of dataset_test.csv
-	python3 Analysis/describe.py datasets/dataset_test.csv
-	python3 Analysis/describe_pandas.py datasets/dataset_test.csv
+.PHONY: describe
+describe: ## Show descriptive analysis of dataset_test.csv
+	python3 Analysis/describe.py datasets/dataset_train.csv
+	python3 Analysis/describe_pandas.py datasets/dataset_train.csv
 	#diff -u dataset_test_describe_pandas.txt dataset_test_describe.txt
 
-.PHONY: describe_train
-describe_train: ## Show descriptive analysis of dataset_train.csv
-	python3 Analysis/describe.py datasets/dataset_train.csv
 
 .PHONY: truants
 truants: ## Studies NaN values
@@ -25,6 +25,10 @@ truants: ## Studies NaN values
 .PHONY: histogram
 histogram: ## Show histogram of dataset_train.csv
 	python3 Visualization/histogram.py datasets/dataset_train.csv
+
+.PHONY: boxplot
+boxplot: ## Show boxplot of dataset_train.csv
+	python3 Visualization/boxPlot.py datasets/dataset_train.csv
 
 .PHONY: pair_plot_test
 pair_plot_test: ## Show pair_plot of dataset_test.csv
@@ -42,17 +46,21 @@ scatter_test: ## Show scatter of dataset_test.csv
 scatter_train: ## Show scatter of dataset_train_normalized.csv
 	python3 Visualization/scatter.py datasets/dataset_train_normalized.csv
 
-.PHONY: split_train
-split_train: ## Split dataset_train.csv into train and validation sets
-	python3 Regression/split_train.py datasets/dataset_train_normalized.csv $(TRAIN_PCT)
+.PHONY: split
+split: ## Split dataset_train.csv into train and validation sets
+	python3 Regression/split.py datasets/dataset_train_normalized.csv $(TRAIN_PCT)
 
 .PHONY: train
 train: ## Train multi-classifier using a logistic regression one-vs-all approach
-	python3 Regression/logreg_train.py datasets/dataset_train.csv
-	
+	python3 Regression/train.py datasets/dataset_train_normalized_to_train.csv $(EPOCHS) $(LEARNING_RATE) $(TOLERANCE)
+
+.PHONY: test
+test: ## Test multi-classifier using a logistic regression one-vs-all approach
+	python3 Regression/test.py datasets/dataset_train_normalized_to_test.csv datasets/weights.json
+
 .PHONY: predict
 predict: ## Predict houses for dataset_test.csv using weights.json
-	python3 Regression/logreg_predict.py dataset_test.csv weights.json
+	python3 Regression/predict.py datasets/dataset_test.csv datasets/weights.json datasets/dataset_train_describe.csv
 
 .PHONY: set
 set: ## Set a python environment for this project
