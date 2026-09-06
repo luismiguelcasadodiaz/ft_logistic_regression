@@ -2,9 +2,10 @@ import sys
 import os
 import pandas as pd
 import numpy as np
-from statistics import ft_statistics, ft_category_statistics
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from aux_funcs.file_func import path_test  # noqa: E402
+from Analysis.statistics import ft_statistics  # noqa: E402
+from Analysis.statistics import ft_category_statistics  # noqa: E402
 
 
 def fmt(x):
@@ -182,6 +183,7 @@ def ft_normalize_data(dataset_path: str, desc: pd.DataFrame) -> pd.DataFrame:
     df = pd.read_csv(dataset_path)
     numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
     for feature in numeric_columns[1:]:  # Skip index
+
         if desc.at['count', feature] != len(df):
             # this feature has NaN values
             # Adds a binary "was missing" colums
@@ -217,6 +219,7 @@ def main(path: str):
         None. Prints the descriptive statistics table to stdout and writes
         both the statistics and the normalized dataset to text files in the
         current working directory.
+        Also writes statistics to csv that will be use for test normalizacion
     """
     print(f"Descriptive Analysis of {path}")
 
@@ -225,12 +228,19 @@ def main(path: str):
     pd.set_option('display.max_rows', None)
     desc = ft_describe(path)
     print(desc.to_string(formatters={col: fmt for col in desc.columns}))
+    # save describe printout in a txt file
     new_path = os.path.join(
         os.path.dirname(path),
         os.path.splitext(os.path.basename(path))[0] + "_describe.txt"
     )
     with open(new_path, "w") as f:
         f.write(desc.to_string())
+    # save describe Dataframe to a csv file for further utilisation
+    new_path = os.path.join(
+        os.path.dirname(path),
+        os.path.splitext(os.path.basename(path))[0] + "_describe.csv"
+    )
+    desc.to_csv(new_path)
 
     normalized_data = ft_normalize_data(path, desc)
     new_path = os.path.join(

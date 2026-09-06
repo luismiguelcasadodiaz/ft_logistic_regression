@@ -24,7 +24,7 @@ def main(dataset_path: str, weight_file_path: str):
     print(predictions)
     for i, prediction in enumerate(predictions):
         print(f"{i:3}.-{prediction}")
-    print(f"Accuracy Score {accuracy_score(Y, predictions):.2f}")
+    print(f"Accuracy Score {accuracy_score(Y, predictions):.4f}")
 
 
 if __name__ == "__main__":
