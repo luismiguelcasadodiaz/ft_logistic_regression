@@ -13,7 +13,29 @@ Before implementing the multiclassifier, some data analysis and visualization ar
 - `datasets/` — the training and test CSVs.
 - `aux_funcs/` — shared helper functions.
 
+## make
 Run `make help` to see all available commands: setting up the Python environment, running the descriptive-statistics and visualization scripts, and training/predicting with the model.
+
+```bash
+help                 Show this help menu
+describe             Show descriptive analysis of dataset_test.csv
+truants              Studies NaN values
+histogram            Show histogram of dataset_train.csv
+boxplot              Show boxplot of dataset_train.csv
+pair_plot_test       Show pair_plot of dataset_test.csv
+pair_plot_train      Show pair_plot of dataset_train.csv
+scatter_test         Show scatter of dataset_test.csv
+scatter_train        Show scatter of dataset_train_normalized.csv
+split                Split dataset_train.csv into train and validation sets
+train                Train multi-classifier using a logistic regression one-vs-all approach
+test                 Test multi-classifier using a logistic regression one-vs-all approach
+predict              Predict houses for dataset_test.csv using weights.json
+set                  Set a python environment for this project
+activate             Activate the python environment for this project
+unset                removes the python 
+upgrade              Upgrades pip
+norminette           Run norminette on all .py files
+```
 
 
 ## Pipeline de datos
@@ -21,35 +43,40 @@ Run `make help` to see all available commands: setting up the Python environment
 The following diagram describes the flow of files and scripts in the project, from the raw training dataset to the final predictions.
 
 ```mermaid
-flowchart TD
-    A[("dataset_train.csv")] --> P1["describe.py"]
-    P1 --> B[("dataset_train_describe.txt")]
-    P1 --> C[("dataset_train_normalized.csv")]
+flowchart LR
+ A[("train.csv")] --> P1["describe.py"]
 
-    C --> P2["split.py"]
-    P2 --> D[("dataset_train_normalized_to_train.csv")]
-    P2 --> E[("dataset_train_normalized_to_test.csv")]
+    P1 --> O1a[("train_describe.txt")]
+    P1 --> O1b[("train_normalized.csv")]
 
-    D --> P3["train.py"]
-    P3 --> F[("weigths.json")]
+    O1b --> P2["split.py"]
 
-    E --> P4["test.py"]
-    F --> P4
-    P4 --> G[("scores.txt")]
+    P2 --> O2a[("train_to_test.csv")]
+    P2 --> O2b[("train_to_train.csv")]
 
-    H[("dataset_test.csv")] --> P5["predict.py"]
-    B --> P5
-    F --> P5
-    P5 --> I[("Predictions.txt")]
+    O2b --> P3["train.py"]
+
+    P3 --> O3[("weigths.json")]
+
+    O2a --> P4["test.py"]
+    O3 --> P5
+
+    P4 --> O4[("scores.txt")]
+
+    H[("test.csv")] --> P5["predict.py"]
+    O1a --> P5
+    O3 --> P4
+
+    P5 --> O5[("Predictions.txt")]
 ```
 
 **Stage description:**
 
-1. **`describe.py`** — from `dataset_train.csv`, generates the dataset statistics (`dataset_train_describe.txt`) and a normalized version (`dataset_train_normalized.csv`).
-2. **`split.py`** — splits `dataset_train_normalized.csv` into a training set (`dataset_train_normalized_to_train.csv`) and a test set (`dataset_train_normalized_to_test.csv`).
-3. **`train.py`** — trains the model on `dataset_train_normalized_to_train.csv` and produces the weights (`weigths.json`).
-4. **`test.py`** — evaluates the model using `dataset_train_normalized_to_test.csv` and `weigths.json`, generating `scores.txt`.
-5. **`predict.py`** — uses `dataset_test.csv`, `dataset_train_describe.txt`, and `weigths.json` to generate `Predictions.txt`.
+1. **`describe.py`** — from `train.csv`, generates the dataset statistics (`train_describe.txt`) and a normalized version (`train_normalized.csv`).
+2. **`split.py`** — splits `train_normalized.csv` into a training set (`train_to_train.csv`) and a test set (`train_to_test.csv`).
+3. **`train.py`** — trains the model on `train_to_train.csv` and produces the weights (`weigths.json`).
+4. **`test.py`** — evaluates the model using `train_to_test.csv` and `weigths.json`, generating `scores.txt`.
+5. **`predict.py`** — uses `test.csv`, `train_describe.txt`, and `weigths.json` to generate `Predictions.txt`.
 
 
 ## Data Analysis
