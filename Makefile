@@ -3,7 +3,7 @@
 .DEFAULT_GOAL := help
 environment := ft_log_reg
 TRAIN_PCT ?= 80
-EPOCHS ?= 30000
+EPOCHS ?= 3000
 LEARNING_RATE ?= 0.01
 TOLERANCE ?= 1e-6
 
