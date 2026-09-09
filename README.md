@@ -293,3 +293,14 @@ for house, group in df.groupby('Hogwarts House'):
 Resulting dataset are saved into darasets folder as:
 + dataset_train_normalized_to_train.csv
 + dataset_train_normalized_to_test.csv
+
+
+## Test
+
+### Accuracy
+The subject requires me to measure my model accuracy using the methode `accuracy_score()` from sklearn.metrics.
+This measures the percentage of the number of samples correctly predicted.
+
+$$\texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} 1(\hat{y}_i = y_i)$$
+
+My first accuray score was 97,83%. 
